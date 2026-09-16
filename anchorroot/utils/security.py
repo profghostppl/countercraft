@@ -1,7 +1,7 @@
 """
 Privilege-aware execution helpers and output sanitization.
 
-Distinct from `countercraft.core.utils` (which owns the raw subprocess/platform
+Distinct from `anchorroot.core.utils` (which owns the raw subprocess/platform
 primitives -- `run_command`, `is_elevated`, `which`, ...): this module is
 the policy layer on top of those primitives, covering two concerns the
 brief calls out specifically:
@@ -15,7 +15,7 @@ brief calls out specifically:
    is parsed or ever printed to a terminal, since a malicious peripheral
    or firmware string is attacker-controlled input reaching our process.
 
-`countercraft.core.utils.run_command` calls `sanitize_output` on every command's
+`anchorroot.core.utils.run_command` calls `sanitize_output` on every command's
 stdout/stderr as a blanket defense; this module additionally exposes
 `run_privileged` for the specific case of a command that is *known* to
 require elevation, so a module can skip the doomed attempt entirely and
@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import re
 
-from countercraft.core.utils import CommandResult, is_elevated, is_linux, is_macos, is_windows, run_command
+from anchorroot.core.utils import CommandResult, is_elevated, is_linux, is_macos, is_windows, run_command
 
 # -- output sanitization -------------------------------------------------
 
@@ -64,7 +64,7 @@ def sanitize_output(text: str, max_len: int = DEFAULT_MAX_OUTPUT_LEN) -> str:
 # -- missing-dependency / privilege remediation messages -----------------
 
 # Best-effort install hints per binary. Not exhaustive -- covers the
-# external tools CounterCraft's modules shell out to. A binary absent from this
+# external tools Anchorroot's modules shell out to. A binary absent from this
 # table still gets a generic "not found on PATH" message, just without
 # the package-manager-specific hint.
 _BINARY_PACKAGE_HINTS: dict[str, dict[str, str]] = {
@@ -116,7 +116,7 @@ def describe_elevation_required(context: str) -> str:
             "an existing elevated PowerShell run the same command again)."
         )
     elif is_macos() or is_linux():
-        how = "Re-run with sudo, e.g.: sudo countercraft ..."
+        how = "Re-run with sudo, e.g.: sudo anchorroot ..."
     else:
         how = "Re-run this process with elevated/root privileges."
     return f"{context} requires elevated privileges. {how}"

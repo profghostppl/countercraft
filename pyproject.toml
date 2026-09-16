@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "countercraft"
+name = "anchorroot"
 dynamic = ["version"]
 description = "Host-level defensive security audit engine: firmware/UEFI integrity, TPM, IOMMU, ME/PSP, root CA trust, persistence, and passive network telemetry checks."
 readme = "README.md"
@@ -14,7 +14,7 @@ classifiers = [
 ]
 
 # Every module degrades gracefully without its soft dependencies (see
-# README's "External tools CounterCraft integrates with" and each
+# README's "External tools Anchorroot integrates with" and each
 # module's own "not available" INFO findings), so nothing here is a hard
 # runtime requirement -- install the `full` extra for complete coverage.
 dependencies = []
@@ -31,14 +31,13 @@ dev = [
 ]
 
 [project.scripts]
-countercraft = "countercraft.cli:main"
-cc = "countercraft.cli:main"
+anchorroot = "anchorroot.cli:main"
 
 [tool.setuptools.dynamic]
-version = { attr = "countercraft.config.VERSION" }
+version = { attr = "anchorroot.config.VERSION" }
 
 [tool.setuptools.packages.find]
-include = ["countercraft*"]
+include = ["anchorroot*"]
 
 [tool.setuptools.package-data]
-countercraft = ["resources/*.yaml"]
+anchorroot = ["resources/*.yaml"]

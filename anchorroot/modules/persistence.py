@@ -24,9 +24,9 @@ import re
 from pathlib import Path
 from typing import Iterable, Optional
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import is_linux, is_mock_mode, is_windows, run_command, run_powershell, which
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import is_linux, is_mock_mode, is_windows, run_command, run_powershell, which
 
 _WINDOWS_STANDARD_DIRS = (
     r"c:\windows\system32",
@@ -68,7 +68,7 @@ class PersistenceAuditor(BaseAuditor):
         the names to diff against a baseline.
         """
         if is_mock_mode():
-            from countercraft.mocks import MOCK_KERNEL_MODULES
+            from anchorroot.mocks import MOCK_KERNEL_MODULES
 
             return list(MOCK_KERNEL_MODULES)
         if is_linux():

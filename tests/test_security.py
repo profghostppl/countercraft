@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
-from countercraft.core.utils import CommandResult
-from countercraft.utils.security import (
+from anchorroot.core.utils import CommandResult
+from anchorroot.utils.security import (
     describe_elevation_required,
     describe_missing_binary,
     elevation_required_result,
@@ -60,18 +60,18 @@ def test_describe_missing_binary_unknown_binary_still_returns_generic_message():
 
 
 def test_describe_elevation_required_windows_message():
-    with patch("countercraft.utils.security.is_windows", return_value=True), patch(
-        "countercraft.utils.security.is_macos", return_value=False
-    ), patch("countercraft.utils.security.is_linux", return_value=False):
+    with patch("anchorroot.utils.security.is_windows", return_value=True), patch(
+        "anchorroot.utils.security.is_macos", return_value=False
+    ), patch("anchorroot.utils.security.is_linux", return_value=False):
         msg = describe_elevation_required("SPI flash write-protection register read")
     assert "Administrator" in msg
     assert "SPI flash write-protection register read" in msg
 
 
 def test_describe_elevation_required_linux_message():
-    with patch("countercraft.utils.security.is_windows", return_value=False), patch(
-        "countercraft.utils.security.is_macos", return_value=False
-    ), patch("countercraft.utils.security.is_linux", return_value=True):
+    with patch("anchorroot.utils.security.is_windows", return_value=False), patch(
+        "anchorroot.utils.security.is_macos", return_value=False
+    ), patch("anchorroot.utils.security.is_linux", return_value=True):
         msg = describe_elevation_required("kernel module signature check")
     assert "sudo" in msg
 
@@ -85,8 +85,8 @@ def test_elevation_required_result_shape():
 
 
 def test_run_privileged_skips_execution_when_not_elevated():
-    with patch("countercraft.utils.security.is_elevated", return_value=False), patch(
-        "countercraft.utils.security.run_command"
+    with patch("anchorroot.utils.security.is_elevated", return_value=False), patch(
+        "anchorroot.utils.security.run_command"
     ) as mock_run:
         result = run_privileged(["chipsec_main", "-m", "common.bios_wp"], context="BIOS write-protect check")
     mock_run.assert_not_called()
@@ -96,8 +96,8 @@ def test_run_privileged_skips_execution_when_not_elevated():
 
 def test_run_privileged_delegates_when_elevated():
     canned = CommandResult(args=[], returncode=0, stdout="ok", stderr="")
-    with patch("countercraft.utils.security.is_elevated", return_value=True), patch(
-        "countercraft.utils.security.run_command", return_value=canned
+    with patch("anchorroot.utils.security.is_elevated", return_value=True), patch(
+        "anchorroot.utils.security.run_command", return_value=canned
     ) as mock_run:
         result = run_privileged(["chipsec_main", "-m", "common.bios_wp"], context="BIOS write-protect check")
     mock_run.assert_called_once()

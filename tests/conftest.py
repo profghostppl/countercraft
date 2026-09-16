@@ -1,5 +1,5 @@
 """
-Shared pytest fixtures for the CounterCraft test suite: automatic
+Shared pytest fixtures for the Anchorroot test suite: automatic
 mock-mode reset between tests, and canned TPM / dmesg / EFI-variable
 payloads that individual auditor tests can build on instead of
 hand-rolling the same synthetic data.
@@ -13,10 +13,10 @@ from typing import Callable
 
 import pytest
 
-import countercraft.core.utils as core_utils
+import anchorroot.core.utils as core_utils
 
 # EFI_CERT_SHA256_GUID (little-endian per the on-disk EFI_SIGNATURE_LIST
-# format) -- see countercraft/modules/ca_auditor.py for the authoritative
+# format) -- see anchorroot/modules/ca_auditor.py for the authoritative
 # derivation and usage.
 _EFI_CERT_SHA256_GUID = struct.pack(
     "<IHH8s", 0xC1C41626, 0x504C, 0x4092, bytes([0xAC, 0xA9, 0x41, 0xF9, 0x36, 0x93, 0x43, 0x28])
@@ -37,7 +37,7 @@ def _reset_mock_mode():
 
 @pytest.fixture
 def tpm_pcrread_output() -> str:
-    """Sample `tpm2_pcrread sha256` output covering the PCRs CounterCraft cares about."""
+    """Sample `tpm2_pcrread sha256` output covering the PCRs Anchorroot cares about."""
     return (
         "sha256:\n"
         "  0 : 0x1111111111111111111111111111111111111111111111111111111111111111\n"

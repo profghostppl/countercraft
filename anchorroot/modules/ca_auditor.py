@@ -35,9 +35,9 @@ import struct
 from pathlib import Path
 from typing import Optional
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import is_linux, is_mock_mode, is_windows, run_command, run_powershell
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import is_linux, is_mock_mode, is_windows, run_command, run_powershell
 
 # Case-insensitive substring matches against CA "Subject" strings. Sourced
 # from widely reported OEM-bundled MITM/adware CA incidents (Superfish/
@@ -100,7 +100,7 @@ class CaAuditor(BaseAuditor):
         if is_windows():
             return self._enumerate_ca_windows()
         if is_mock_mode():
-            from countercraft.mocks import MOCK_ROOT_CAS
+            from anchorroot.mocks import MOCK_ROOT_CAS
 
             return [(subject, fingerprint) for fingerprint, subject in MOCK_ROOT_CAS.items()]
         return None
@@ -376,7 +376,7 @@ class CaAuditor(BaseAuditor):
     @staticmethod
     def _read_dbx_raw() -> Optional[bytes]:
         if is_mock_mode():
-            from countercraft.mocks import mock_efivar
+            from anchorroot.mocks import mock_efivar
 
             raw = mock_efivar("dbx-d719b2cb-3d3a-4596-a3bc-dad00e67656f")
             return raw[4:] if raw else None

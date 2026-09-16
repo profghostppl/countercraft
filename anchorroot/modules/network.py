@@ -30,10 +30,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-from countercraft.config import DEFAULT_WHITELIST_PATH
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import is_elevated
+from anchorroot.config import DEFAULT_WHITELIST_PATH
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import is_elevated
 
 try:
     import yaml

@@ -1,6 +1,6 @@
 import json
 
-from countercraft.core.diff import Snapshot, diff_snapshots, load_snapshot, save_snapshot, SnapshotError
+from anchorroot.core.diff import Snapshot, diff_snapshots, load_snapshot, save_snapshot, SnapshotError
 import pytest
 
 
@@ -37,7 +37,7 @@ def test_snapshot_from_dict_tolerates_missing_keys():
 
 def test_save_and_load_snapshot_round_trip(tmp_path, monkeypatch):
     path = tmp_path / "baseline.json"
-    monkeypatch.setattr("countercraft.core.diff.collect_snapshot", lambda: _snapshot())
+    monkeypatch.setattr("anchorroot.core.diff.collect_snapshot", lambda: _snapshot())
     saved = save_snapshot(path)
     loaded = load_snapshot(path)
     assert loaded.tpm_pcrs == saved.tpm_pcrs

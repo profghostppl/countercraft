@@ -1,5 +1,5 @@
 """
-Global constants, versioning, and defaults for CounterCraft.
+Global constants, versioning, and defaults for Anchorroot.
 
 Single source of truth for anything that would otherwise be duplicated
 (and drift) across `cli.py`, `pyproject.toml`, and individual modules --
@@ -14,12 +14,14 @@ from pathlib import Path
 
 VERSION = "1.0.0"
 
-APP_NAME = "countercraft"
-#: Console-script names installed by pyproject.toml's [project.scripts] --
-#: both invoke the same entry point, `cc` is just the short alias.
-CLI_ALIASES = ("countercraft", "cc")
+APP_NAME = "anchorroot"
+#: Console-script name(s) installed by pyproject.toml's [project.scripts].
+#: No short alias is defined for this name (the previous brand's `cc` was
+#: initials-based and doesn't carry over) -- add one here and in
+#: pyproject.toml's [project.scripts] if you want one.
+CLI_ALIASES = ("anchorroot",)
 
-#: Prefix every log line carries, e.g. "[countercraft] INFO: running: tpm ...".
+#: Prefix every log line carries, e.g. "[anchorroot] INFO: running: tpm ...".
 LOG_PREFIX = f"[{APP_NAME}]"
 
 # -- default filesystem locations ------------------------------------------

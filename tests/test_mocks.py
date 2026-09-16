@@ -1,4 +1,4 @@
-from countercraft.mocks import (
+from anchorroot.mocks import (
     MOCK_AVAILABLE_BINARIES,
     mock_command,
     mock_efivar,

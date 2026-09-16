@@ -1,7 +1,7 @@
 import hashlib
 import struct
 
-from countercraft.modules.ca_auditor import CaAuditor
+from anchorroot.modules.ca_auditor import CaAuditor
 
 _EFI_CERT_SHA256_GUID = struct.pack(
     "<IHH8s", 0xC1C41626, 0x504C, 0x4092, bytes([0xAC, 0xA9, 0x41, 0xF9, 0x36, 0x93, 0x43, 0x28])

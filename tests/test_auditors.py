@@ -14,10 +14,10 @@ from unittest.mock import patch
 
 import pytest
 
-import countercraft.core.utils as core_utils
-from countercraft.core.base import BaseAuditor
-from countercraft.core.utils import CommandResult
-from countercraft.modules import (
+import anchorroot.core.utils as core_utils
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.utils import CommandResult
+from anchorroot.modules import (
     CaAuditor,
     DmaAuditor,
     FirmwareIntegrityChecker,
@@ -90,7 +90,7 @@ def test_tpm_auditor_parses_conftest_pcrread_fixture(tpm_pcrread_output):
 
 def test_dma_auditor_detects_iommu_enabled_from_conftest_dmesg_fixture(dmesg_iommu_enabled):
     with patch(
-        "countercraft.modules.dma_auditor.run_command",
+        "anchorroot.modules.dma_auditor.run_command",
         return_value=CommandResult(args=[], returncode=0, stdout=dmesg_iommu_enabled, stderr=""),
     ):
         assert DmaAuditor._check_dmesg() is True
@@ -98,7 +98,7 @@ def test_dma_auditor_detects_iommu_enabled_from_conftest_dmesg_fixture(dmesg_iom
 
 def test_dma_auditor_inconclusive_from_conftest_dmesg_absent_fixture(dmesg_iommu_absent):
     with patch(
-        "countercraft.modules.dma_auditor.run_command",
+        "anchorroot.modules.dma_auditor.run_command",
         return_value=CommandResult(args=[], returncode=0, stdout=dmesg_iommu_absent, stderr=""),
     ):
         assert DmaAuditor._check_dmesg() is None

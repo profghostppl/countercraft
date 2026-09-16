@@ -2,14 +2,14 @@
 Offline mock providers for --mock / --dry-run mode.
 
 A single registry of canned responses for the external tools and OS
-interfaces CounterCraft's modules read from: subprocess commands
+interfaces Anchorroot's modules read from: subprocess commands
 (tpm2-tools, CHIPSEC, intelmetool, mokutil, driverquery, lsmod, dmesg,
 lspci, openssl, osquery, various PowerShell cmdlets, bcdedit, msinfo32)
 and the raw EFI variable reads used for Secure Boot keys and dbx.
 
 Consulted from exactly two places, both gated on
-`countercraft.core.utils.is_mock_mode()`:
-  - `countercraft.core.utils.which` / `run_command` (all subprocess-based checks)
+`anchorroot.core.utils.is_mock_mode()`:
+  - `anchorroot.core.utils.which` / `run_command` (all subprocess-based checks)
   - `uefi_platform._read_efivar` / `ca_auditor._read_dbx_raw` /
     `core.diff` (the handful of direct efivarfs file reads, which don't
     go through run_command at all)
@@ -28,7 +28,7 @@ import re
 import struct
 from dataclasses import dataclass, field
 
-from countercraft.core.utils import CommandResult
+from anchorroot.core.utils import CommandResult
 
 # -- binaries mock mode pretends are installed -----------------------------
 

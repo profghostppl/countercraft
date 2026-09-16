@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
-from countercraft.core.utils import CommandResult
-from countercraft.modules.uefi_platform import UefiPlatformAuditor
+from anchorroot.core.utils import CommandResult
+from anchorroot.modules.uefi_platform import UefiPlatformAuditor
 
 
 def _cmd_result(stdout: str = "", returncode: int = 0) -> CommandResult:
@@ -11,7 +11,7 @@ def _cmd_result(stdout: str = "", returncode: int = 0) -> CommandResult:
 def test_run_chipsec_module_flags_failed_as_critical():
     auditor = UefiPlatformAuditor()
     output = "[x][ =======================================================\n[-] FAILED: BIOS region write protection is NOT configured\n"
-    with patch("countercraft.modules.uefi_platform.run_command", return_value=_cmd_result(output)):
+    with patch("anchorroot.modules.uefi_platform.run_command", return_value=_cmd_result(output)):
         auditor._run_chipsec_module(
             "chipsec_main",
             "common.bios_wp",
@@ -26,7 +26,7 @@ def test_run_chipsec_module_flags_failed_as_critical():
 def test_run_chipsec_module_reports_info_on_pass():
     auditor = UefiPlatformAuditor()
     output = "[+] PASSED: BIOS region write protection is configured correctly\n"
-    with patch("countercraft.modules.uefi_platform.run_command", return_value=_cmd_result(output)):
+    with patch("anchorroot.modules.uefi_platform.run_command", return_value=_cmd_result(output)):
         auditor._run_chipsec_module(
             "chipsec_main",
             "common.bios_wp",
@@ -39,7 +39,7 @@ def test_run_chipsec_module_reports_info_on_pass():
 
 def test_run_chipsec_module_warns_on_ambiguous_output():
     auditor = UefiPlatformAuditor()
-    with patch("countercraft.modules.uefi_platform.run_command", return_value=_cmd_result("some unrelated chipsec banner\n")):
+    with patch("anchorroot.modules.uefi_platform.run_command", return_value=_cmd_result("some unrelated chipsec banner\n")):
         auditor._run_chipsec_module(
             "chipsec_main",
             "common.bios_wp",
@@ -54,7 +54,7 @@ def test_run_chipsec_module_warns_on_ambiguous_output():
 def test_run_chipsec_module_handles_timeout():
     auditor = UefiPlatformAuditor()
     timed_out = CommandResult(args=[], returncode=-1, stdout="", stderr="timed out", timed_out=True)
-    with patch("countercraft.modules.uefi_platform.run_command", return_value=timed_out):
+    with patch("anchorroot.modules.uefi_platform.run_command", return_value=timed_out):
         auditor._run_chipsec_module(
             "chipsec_main",
             "common.smm",

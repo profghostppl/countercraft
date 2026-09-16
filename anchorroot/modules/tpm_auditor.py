@@ -27,9 +27,9 @@ import re
 from pathlib import Path
 from typing import Optional
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import which, run_command
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import which, run_command
 
 PCRS_OF_INTEREST: dict[int, str] = {
     0: "CRTM / BIOS-UEFI code / Option ROMs",
@@ -113,7 +113,7 @@ class TpmAuditor(BaseAuditor):
 
     def _audit_presence_only(self) -> None:
         """Best-effort presence check when tpm2-tools is unavailable."""
-        from countercraft.core.utils import is_linux, is_windows, run_powershell
+        from anchorroot.core.utils import is_linux, is_windows, run_powershell
 
         if is_linux():
             if Path("/dev/tpmrm0").exists() or Path("/dev/tpm0").exists():
@@ -246,7 +246,7 @@ class TpmAuditor(BaseAuditor):
 
     @staticmethod
     def save_baseline(pcrs: dict[int, str], out_path: Path) -> None:
-        """Used by `countercraft audit --save-tpm-baseline` to persist a known-good snapshot."""
+        """Used by `anchorroot audit --save-tpm-baseline` to persist a known-good snapshot."""
         out_path.write_text(json.dumps({str(k): v for k, v in pcrs.items()}, indent=2))
 
     @staticmethod

@@ -1,16 +1,16 @@
 """
-Command-line interface for CounterCraft.
+Command-line interface for Anchorroot.
 
-Installed as two console scripts (see pyproject.toml's [project.scripts]),
-both pointing at `main()` here: `countercraft` and the short alias `cc`.
-`python -m countercraft` works identically.
+Installed as the `anchorroot` console script (see pyproject.toml's
+[project.scripts]), pointing at `main()` here. `python -m anchorroot`
+works identically.
 
 Two subcommands:
-  countercraft audit [flags]           run auditors, optionally --diff a baseline
-  countercraft baseline save [path]    snapshot current state for later comparison
+  anchorroot audit [flags]           run auditors, optionally --diff a baseline
+  anchorroot baseline save [path]    snapshot current state for later comparison
 
-`audit` is the default: `countercraft`, `countercraft --all`,
-`countercraft --audit-uefi` all work without typing the subcommand name, by
+`audit` is the default: `anchorroot`, `anchorroot --all`,
+`anchorroot --audit-uefi` all work without typing the subcommand name, by
 inserting it automatically when the first argument isn't a known
 subcommand. Within `audit`, module selection stays one boolean flag per
 auditor (`--audit-uefi`, `--audit-tpm`, ...) plus `--all` (also the default
@@ -18,7 +18,7 @@ when no selection flag is given). Per-artifact baseline snapshot creation
 (`--save-firmware-baseline`, `--save-tpm-baseline`) remains a one-shot
 action that exits before the normal audit runs; the combined-state
 baseline (`baseline save` / `audit --diff`) is a separate, broader
-mechanism -- see `countercraft.core.diff`.
+mechanism -- see `anchorroot.core.diff`.
 """
 
 from __future__ import annotations
@@ -27,12 +27,12 @@ import argparse
 import sys
 from pathlib import Path
 
-from countercraft.config import DEFAULT_REPORT_PATH
-from countercraft.core.diff import DEFAULT_BASELINE_PATH, SnapshotError, diff_snapshots, load_snapshot, save_snapshot
-from countercraft.core.models import AuditReport, ModuleResult, Severity
-from countercraft.core.reporter import print_summary, write_json_report
-from countercraft.core.utils import is_elevated, is_mock_mode, set_mock_mode
-from countercraft.modules import (
+from anchorroot.config import DEFAULT_REPORT_PATH
+from anchorroot.core.diff import DEFAULT_BASELINE_PATH, SnapshotError, diff_snapshots, load_snapshot, save_snapshot
+from anchorroot.core.models import AuditReport, ModuleResult, Severity
+from anchorroot.core.reporter import print_summary, write_json_report
+from anchorroot.core.utils import is_elevated, is_mock_mode, set_mock_mode
+from anchorroot.modules import (
     CaAuditor,
     DmaAuditor,
     FirmwareIntegrityChecker,
@@ -42,7 +42,7 @@ from countercraft.modules import (
     TpmAuditor,
     UefiPlatformAuditor,
 )
-from countercraft.utils.logger import logger
+from anchorroot.utils.logger import logger
 
 _SEVERITY_ORDER = {"none": None, "info": Severity.INFO, "warning": Severity.WARNING, "critical": Severity.CRITICAL}
 _SUBCOMMANDS = ("audit", "baseline")
@@ -54,7 +54,7 @@ def _add_mock_flag(parser: argparse.ArgumentParser) -> None:
         "--dry-run",
         dest="mock",
         action="store_true",
-        help="Run entirely against synthetic data (countercraft.mocks) -- no root, no "
+        help="Run entirely against synthetic data (anchorroot.mocks) -- no root, no "
         "TPM/CHIPSEC/ME hardware, none of the external tools actually installed "
         "required. Useful for demos, CI smoke tests, and developing without matching hardware.",
     )
@@ -104,7 +104,7 @@ def _build_audit_parser(parser: argparse.ArgumentParser) -> None:
         metavar="PATH",
         help=f"Compare this run's TPM PCRs / root CAs / kernel modules / EFI boot "
         f"variables against a saved baseline snapshot (default path if omitted: "
-        f"{DEFAULT_BASELINE_PATH}). Create one first with 'countercraft baseline save'.",
+        f"{DEFAULT_BASELINE_PATH}). Create one first with 'anchorroot baseline save'.",
     )
 
     out = parser.add_argument_group("output")
@@ -122,9 +122,9 @@ def _build_audit_parser(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         # prog intentionally left unset: argparse falls back to
-        # sys.argv[0]'s basename, so usage text reads "countercraft ..."
-        # or "cc ..." matching whichever console-script name was actually run.
-        description="CounterCraft -- host-level defensive security audit.",
+        # sys.argv[0]'s basename, so usage text reads "anchorroot ..."
+        # (or "__main__.py ..." if invoked via `python -m anchorroot`).
+        description="Anchorroot -- host-level defensive security audit.",
     )
     subparsers = parser.add_subparsers(dest="subcommand")
 
@@ -266,7 +266,7 @@ def _cmd_audit(args: argparse.Namespace) -> int:
 
     if baseline_snapshot is not None:
         logger.info("running: baseline_diff ...")
-        from countercraft.core.diff import collect_snapshot
+        from anchorroot.core.diff import collect_snapshot
 
         current_snapshot = collect_snapshot()
         diff_findings = diff_snapshots(baseline_snapshot, current_snapshot)
@@ -285,7 +285,7 @@ def _cmd_audit(args: argparse.Namespace) -> int:
 
 def _cmd_baseline(args: argparse.Namespace) -> int:
     if args.baseline_action != "save":
-        logger.error("usage: countercraft baseline save [path]")
+        logger.error("usage: anchorroot baseline save [path]")
         return 2
 
     if getattr(args, "mock", False):

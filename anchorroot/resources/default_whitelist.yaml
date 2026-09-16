@@ -1,4 +1,4 @@
-# CounterCraft - network whitelist
+# Anchorroot - network whitelist
 #
 # Subnets listed here are treated as "approved" destinations and will not
 # be flagged by the network module. RFC1918 private ranges,

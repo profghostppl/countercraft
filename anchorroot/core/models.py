@@ -16,7 +16,7 @@ import socket
 import uuid
 from typing import Any, Optional
 
-from countercraft.config import SEVERITY_WEIGHTS
+from anchorroot.config import SEVERITY_WEIGHTS
 
 
 class Severity(enum.IntEnum):

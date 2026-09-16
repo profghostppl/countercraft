@@ -9,14 +9,14 @@ from __future__ import annotations
 import abc
 import time
 
-from countercraft.core.models import Finding, ModuleResult, Severity
+from anchorroot.core.models import Finding, ModuleResult, Severity
 
 
 class BaseAuditor(abc.ABC):
     #: Short, stable identifier used in reports and CLI selection (e.g. "tpm").
     name: str = "unnamed"
 
-    #: Human-readable description shown in `countercraft list`.
+    #: Human-readable description shown in `anchorroot list`.
     description: str = ""
 
     #: If True, `run()` will not be called at all without elevated privileges;
@@ -62,7 +62,7 @@ class BaseAuditor(abc.ABC):
 
     def run(self) -> ModuleResult:
         """Engine entry point. Do not override -- implement `audit()` instead."""
-        from countercraft.core.utils import is_elevated  # local import avoids a cycle
+        from anchorroot.core.utils import is_elevated  # local import avoids a cycle
 
         if self.requires_root and not is_elevated():
             return ModuleResult(

@@ -6,7 +6,7 @@ binwalk, osquery...) stall the whole audit.
 
 Also owns the global mock-mode toggle (`--mock`/`--dry-run`): when enabled,
 `which`, `run_command`, `run_powershell`, and `is_elevated` all answer from
-`countercraft.mocks` instead of touching the real OS/hardware, so the entire suite
+`anchorroot.mocks` instead of touching the real OS/hardware, so the entire suite
 can run and produce a full report with no root, no TPM, no CHIPSEC driver,
 and none of the external tools actually installed. This is the single
 interception point -- individual modules never need to know mock mode
@@ -88,12 +88,12 @@ def which(binary: str) -> Optional[str]:
     Locate an external tool on PATH, or None.
 
     In mock mode, real PATH is ignored entirely -- only binaries with a
-    registered mock fixture (`countercraft.mocks.MOCK_AVAILABLE_BINARIES`)
+    registered mock fixture (`anchorroot.mocks.MOCK_AVAILABLE_BINARIES`)
     report as present, so mock runs are fully deterministic and independent
     of what happens to be installed on the machine running them.
     """
     if _mock_mode:
-        from countercraft.mocks import mock_which
+        from anchorroot.mocks import mock_which
 
         return mock_which(binary)
     return shutil.which(binary)
@@ -124,19 +124,19 @@ def run_command(
     output to text. Callers inspect `.ok` / `.returncode` themselves.
 
     Output is sanitized (control/escape sequences stripped, length capped)
-    before it's ever returned to a caller -- see `countercraft.utils.security`
+    before it's ever returned to a caller -- see `anchorroot.utils.security`
     -- and decoding never raises on malformed bytes from a buggy or hostile
     external tool (`errors="replace"`).
 
     In mock mode, this never touches the real subprocess layer at all:
-    it always returns a canned/synthesized result from `countercraft.mocks`.
+    it always returns a canned/synthesized result from `anchorroot.mocks`.
     """
     if _mock_mode:
-        from countercraft.mocks import mock_command
+        from anchorroot.mocks import mock_command
 
         return mock_command(args)
 
-    from countercraft.utils.security import sanitize_output
+    from anchorroot.utils.security import sanitize_output
 
     try:
         proc = subprocess.run(

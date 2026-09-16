@@ -1,6 +1,6 @@
 import json
 
-from countercraft.cli import _normalize_argv, main
+from anchorroot.cli import _normalize_argv, main
 
 # Mock-mode reset between tests is handled by the autouse fixture in
 # tests/conftest.py -- no per-file teardown needed here.
@@ -47,7 +47,7 @@ def test_mock_audit_fail_on_critical_exits_nonzero(tmp_path):
     out = tmp_path / "report.json"
     code = main(["--mock", "--audit-me", "--no-table", "--output", str(out), "--fail-on", "critical"])
     # me_auditor's mock AMT probe deterministically reports a listening
-    # port as CRITICAL -- see countercraft/modules/me_auditor.py.
+    # port as CRITICAL -- see anchorroot/modules/me_auditor.py.
     assert code == 1
 
 

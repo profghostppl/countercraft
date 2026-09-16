@@ -1,22 +1,21 @@
-# CounterCraft
+# Anchorroot
 
 A modular, open-source host auditing engine for **defensive** security use:
 detecting supply-chain compromise, unauthorized system-level telemetry,
 insecure UEFI/platform configuration, hidden persistence, and coprocessor/
 out-of-band management exposure on your own machine.
 
-CounterCraft is a Python 3.10+ CLI, installed as two console scripts --
-`countercraft` and the short alias `cc` (both run the identical tool).
-Every auditor is independent, degrades gracefully when a dependency or
+Anchorroot is a Python 3.10+ CLI, installed as the `anchorroot` console
+script. Every auditor is independent, degrades gracefully when a dependency or
 elevated privilege is unavailable, and reports through one shared JSON +
 CLI scoring engine.
 
 ## Architecture
 
 ```
-pyproject.toml       PEP 621 packaging: [project.scripts] installs `countercraft` + `cc`
+pyproject.toml       PEP 621 packaging: [project.scripts] installs the `anchorroot` command
 requirements.txt     pip-install convenience mirror of pyproject's optional-dependencies
-countercraft/
+anchorroot/
   __init__.py         exposes __version__ (sourced from config.py)
   config.py           global constants: version, app name/aliases, default paths, severity weights
   cli.py              argparse CLI: `audit` (default) and `baseline save` subcommands
@@ -37,7 +36,7 @@ countercraft/
     me_auditor.py        Intel ME / AMD PSP state + AMT out-of-band probe
     ca_auditor.py        Root CA store scrutiny + UEFI dbx inspection
   utils/
-    logger.py           centralized logging, every line tagged `[countercraft]`
+    logger.py           centralized logging, every line tagged `[anchorroot]`
     security.py          privilege-aware remediation messages + output sanitization
   resources/
     default_whitelist.yaml   sample network whitelist
@@ -51,7 +50,7 @@ baselines/              saved TPM/firmware baselines, and the combined state bas
 
 Every auditor returns a `ModuleResult` containing zero or more `Finding`s,
 each tagged `CRITICAL` / `WARNING` / `INFO`. The reporting engine
-(`countercraft/core/reporter.py`) aggregates these into a JSON file and a
+(`anchorroot/core/reporter.py`) aggregates these into a JSON file and a
 CLI summary table (via `rich` if installed, plain text otherwise) with an
 overall weighted risk score.
 
@@ -66,7 +65,7 @@ overall weighted risk score.
 | CHIPSEC SPI write-protect / SMM lock bit checks | **Yes** |
 | Secure Boot state / PK/KEK/db/dbx read | No (read-only OS query) |
 | Firmware image extraction & hashing | No (operates on a file you already dumped) |
-| Dumping firmware with `flashrom` in the first place | **Yes** (not done by CounterCraft) |
+| Dumping firmware with `flashrom` in the first place | **Yes** (not done by Anchorroot) |
 | scapy packet capture (network module) | **Yes** (falls back to unprivileged `psutil` polling) |
 | Full driver/service enumeration | Partial -- some fields hidden unprivileged |
 | TPM PCR read (`tpm2_pcrread`) | Usually no (device-group permissions) |
@@ -78,10 +77,10 @@ overall weighted risk score.
 Auditors never abort the whole run because one check needs elevation --
 that check is skipped or degraded and clearly labeled as such in its
 finding, with a remediation hint (e.g. "re-run elevated"). Where a command
-is *known* to require elevation, `countercraft.utils.security.run_privileged`
+is *known* to require elevation, `anchorroot.utils.security.run_privileged`
 skips attempting it entirely when unprivileged and returns a specific
 message (what's missing and how to fix it) instead of a raw OS permission
-error; `countercraft.utils.security.describe_missing_binary` does the same
+error; `anchorroot.utils.security.describe_missing_binary` does the same
 for a missing external tool, naming the package to install where known.
 
 ## Dry-run / mock mode
@@ -90,15 +89,15 @@ Every check can run against synthetic data instead of real hardware/OS
 state, via `--mock` (alias `--dry-run`) on either subcommand:
 
 ```bash
-countercraft --all --mock
-countercraft baseline save --mock
+anchorroot --all --mock
+anchorroot baseline save --mock
 ```
 
 In mock mode, `which()`/`run_command()`/`run_powershell()`/`is_elevated()`
-are all redirected through the fixture registry in `countercraft/mocks.py`
+are all redirected through the fixture registry in `anchorroot/mocks.py`
 -- no real subprocess is ever invoked, no root/Administrator is required,
 and no TPM, CHIPSEC driver, or ME/PSP hardware needs to be present. This is
-the single interception point in `countercraft/core/utils.py`; individual
+the single interception point in `anchorroot/core/utils.py`; individual
 modules don't know mock mode exists. The fixtures are a deliberate mix of
 clean and flagged results (an unsigned kernel module, a disabled SMM lock
 bit, a Superfish-style root CA, a listening AMT port) so a `--mock` run
@@ -108,7 +107,7 @@ on hardware that doesn't have a TPM or CHIPSEC-supported chipset.
 
 ## State baseline & differential audit
 
-Beyond the per-artifact TPM/firmware baselines below, CounterCraft can
+Beyond the per-artifact TPM/firmware baselines below, Anchorroot can
 snapshot four broader trust-chain indicators -- TPM PCRs, installed root
 CAs, loaded kernel modules, and EFI boot manager variables -- and flag
 anything that changed since a saved baseline, with high-visibility
@@ -117,19 +116,19 @@ anything that changed since a saved baseline, with high-visibility
 
 ```bash
 # Save a baseline once, on a known-good system (default path: baselines/baseline.json)
-countercraft baseline save
+anchorroot baseline save
 
 # On later runs, compare against it
-countercraft audit --all --diff
+anchorroot audit --all --diff
 # or a specific baseline path:
-countercraft audit --all --diff baselines/baseline.json
+anchorroot audit --all --diff baselines/baseline.json
 ```
 
 Each category is only compared when *both* the baseline and the current
 run actually collected data for it -- a collection failure (no TPM this
 boot, running unprivileged, non-UEFI system) is reported as a skipped
 comparison, never as "everything in the baseline was removed". See
-`countercraft/core/diff.py` for the full collection/comparison logic.
+`anchorroot/core/diff.py` for the full collection/comparison logic.
 
 ## Quick start
 
@@ -139,32 +138,30 @@ python -m venv .venv
 pip install -e ".[full,dev]"
 ```
 
-This installs the `countercraft` and `cc` commands into the venv (via
-`pyproject.toml`'s `[project.scripts]`). `python -m countercraft` works
-identically without installing, if you'd rather not.
+This installs the `anchorroot` command into the venv (via `pyproject.toml`'s
+`[project.scripts]`). `python -m anchorroot` works identically without
+installing, if you'd rather not.
 
 Run everything (uses `--all` implicitly when no module flags are given):
 
 ```bash
-countercraft
-# or, equivalently:
-cc
+anchorroot
 ```
 
 Run specific modules:
 
 ```bash
-cc --audit-uefi --audit-tpm --audit-ca
+anchorroot --audit-uefi --audit-tpm --audit-ca
 ```
 
 Run elevated for the checks that need it (recommended for a full audit):
 
 ```bash
 # Linux/macOS
-sudo cc --all
+sudo anchorroot --all
 
 # Windows (from an elevated PowerShell/terminal)
-cc --all
+anchorroot --all
 ```
 
 Firmware integrity, against a dumped image:
@@ -174,53 +171,53 @@ Firmware integrity, against a dumped image:
 sudo flashrom -p internal -r image.bin
 
 # 2. Save a trusted baseline once, on a known-good system
-cc --save-firmware-baseline baselines/firmware.json --firmware-image image.bin
+anchorroot --save-firmware-baseline baselines/firmware.json --firmware-image image.bin
 
 # 3. On later runs, diff against it
-cc --audit-firmware --firmware-image image.bin --firmware-baseline baselines/firmware.json
+anchorroot --audit-firmware --firmware-image image.bin --firmware-baseline baselines/firmware.json
 ```
 
 TPM PCR baseline, similarly:
 
 ```bash
-cc --save-tpm-baseline baselines/tpm.json
-cc --audit-tpm --tpm-baseline baselines/tpm.json
+anchorroot --save-tpm-baseline baselines/tpm.json
+anchorroot --audit-tpm --tpm-baseline baselines/tpm.json
 ```
 
 Passive network capture for 60 seconds against a custom whitelist:
 
 ```bash
-cc --audit-network --network-duration 60 --network-whitelist my_whitelist.yaml
+anchorroot --audit-network --network-duration 60 --network-whitelist my_whitelist.yaml
 ```
 
 CA store check with a Mozilla-derived fingerprint reference list and a
 specific dbx revocation-hash expectation:
 
 ```bash
-cc --audit-ca --mozilla-ca-list mozilla_fingerprints.json --expected-dbx-hashes advisory_hashes.json
+anchorroot --audit-ca --mozilla-ca-list mozilla_fingerprints.json --expected-dbx-hashes advisory_hashes.json
 ```
 
 Full flag reference:
 
 ```bash
-cc --help
-cc baseline --help
+anchorroot --help
+anchorroot baseline --help
 ```
 
 Gate CI/scripts on findings of a given severity:
 
 ```bash
-cc --all --fail-on critical   # exit code 1 if any CRITICAL finding exists
+anchorroot --all --fail-on critical   # exit code 1 if any CRITICAL finding exists
 ```
 
 ## Output
 
-Every run writes a JSON report (default `reports/countercraft_report.json`)
+Every run writes a JSON report (default `reports/anchorroot_report.json`)
 with the full finding list and metadata, and (unless `--no-table`) prints a
 CLI summary table like:
 
 ```
-CounterCraft - Audit Summary
+Anchorroot - Audit Summary
 Host: mybox    OS: Linux 6.8.0 (...)
 Risk Score: 145   CRITICAL: 1  WARNING: 6  INFO: 12
 
@@ -232,10 +229,10 @@ Risk Score: 145   CRITICAL: 1  WARNING: 6  INFO: 12
 
 Progress and diagnostic messages (`running: X ...`, elevation notices,
 errors) go to stderr through the centralized logger
-(`countercraft/utils/logger.py`), each line tagged `[countercraft]` --
+(`anchorroot/utils/logger.py`), each line tagged `[anchorroot]` --
 easy to grep for or filter out when piping the CLI summary elsewhere.
 
-## External tools CounterCraft integrates with
+## External tools Anchorroot integrates with
 
 None of these are pip-installable; install via your OS package manager.
 Every auditor works without them, at reduced fidelity (see each auditor's
@@ -247,7 +244,7 @@ Every auditor works without them, at reduced fidelity (see each auditor's
 | `mokutil` | uefi_platform | Linux Secure Boot state fallback |
 | [UEFITool](https://github.com/LongSoft/UEFITool) (`UEFIExtract`) | firmware_integrity | Preferred firmware image extractor |
 | `binwalk` | firmware_integrity | Fallback extractor |
-| `flashrom` | (you, manually) | Dumping the SPI image CounterCraft then analyzes |
+| `flashrom` | (you, manually) | Dumping the SPI image Anchorroot then analyzes |
 | [osquery](https://osquery.io/) (`osqueryi`) | persistence | Cross-platform startup/task/module queries |
 | [tpm2-tools](https://github.com/tpm2-software/tpm2-tools) (`tpm2_pcrread`) | tpm | PCR readout, Linux and Windows (via TBS) |
 | [intelmetool](https://github.com/coreboot/coreboot/tree/master/util/intelmetool) | me | Intel ME HAP-bit/mode detail on Linux |
@@ -272,16 +269,16 @@ sanitization and privilege-remediation messaging, and a handful of
 CLI-level end-to-end runs in `--mock` mode -- none of it requires root, a
 TPM, or any of the external tools above.
 
-## Extending CounterCraft
+## Extending Anchorroot
 
-Every auditor subclasses `countercraft.core.base.BaseAuditor`, sets `name`
+Every auditor subclasses `anchorroot.core.base.BaseAuditor`, sets `name`
 / `description` / `requires_root`, and implements `audit()`, calling
 `self.add_finding(title, severity, description, remediation=..., **metadata)`
 for each observation. The base class handles privilege gating, timing, and
 turning an unhandled exception into a recorded `ModuleResult.error` instead
 of crashing the whole run -- a new auditor needs no changes anywhere else
-except registering itself in `countercraft/modules/__init__.py` and adding
-a `--audit-*` flag in `countercraft/cli.py`.
+except registering itself in `anchorroot/modules/__init__.py` and adding
+a `--audit-*` flag in `anchorroot/cli.py`.
 
 ## Known limitations
 
@@ -314,6 +311,6 @@ a `--audit-*` flag in `countercraft/cli.py`.
   give it a mock-mode branch too (see `uefi_platform._read_efivar` or
   `me_auditor._probe_amt_ports` for the pattern).
 - The repository checkout folder on disk is not required to be named
-  `countercraft` -- the package name (importable as `countercraft`, and
-  installed as the `countercraft`/`cc` commands) is independent of
-  whatever directory you cloned it into.
+  `anchorroot` -- the package name (importable as `anchorroot`, and
+  installed as the `anchorroot` command) is independent of whatever
+  directory you cloned it into.

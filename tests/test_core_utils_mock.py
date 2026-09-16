@@ -1,7 +1,7 @@
 import sys
 from unittest.mock import patch
 
-import countercraft.core.utils as core_utils
+import anchorroot.core.utils as core_utils
 
 # Mock-mode reset between tests is handled by the autouse fixture in
 # tests/conftest.py -- no per-file teardown needed here.

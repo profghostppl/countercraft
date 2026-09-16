@@ -24,9 +24,9 @@ import re
 import tempfile
 from pathlib import Path
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import is_linux, is_windows, run_command
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import is_linux, is_windows, run_command
 
 
 class DmaAuditor(BaseAuditor):
@@ -202,7 +202,7 @@ class DmaAuditor(BaseAuditor):
 
     @staticmethod
     def _read_kernel_dma_protection() -> bool | None:
-        with tempfile.TemporaryDirectory(prefix="countercraft_dma_") as tmp:
+        with tempfile.TemporaryDirectory(prefix="anchorroot_dma_") as tmp:
             report_path = Path(tmp) / "sysreport.txt"
             result = run_command(
                 ["msinfo32", "/report", str(report_path)], timeout=90.0
@@ -233,7 +233,7 @@ class DmaAuditor(BaseAuditor):
         return None
 
     def _check_thunderbolt_pnp(self) -> None:
-        from countercraft.core.utils import run_powershell
+        from anchorroot.core.utils import run_powershell
 
         result = run_powershell(
             "Get-PnpDevice | Where-Object { $_.FriendlyName -match "

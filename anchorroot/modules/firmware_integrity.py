@@ -25,9 +25,9 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import run_command, which
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import run_command, which
 
 
 class FirmwareIntegrityChecker(BaseAuditor):
@@ -77,7 +77,7 @@ class FirmwareIntegrityChecker(BaseAuditor):
             )
             return
 
-        with tempfile.TemporaryDirectory(prefix="countercraft_fw_") as tmp:
+        with tempfile.TemporaryDirectory(prefix="anchorroot_fw_") as tmp:
             out_dir = Path(tmp) / "extracted"
             ok = extractor(self.firmware_image, out_dir)
             if not ok:
@@ -246,7 +246,7 @@ class FirmwareIntegrityChecker(BaseAuditor):
     @staticmethod
     def save_baseline(firmware_image: Path, out_path: Path) -> int:
         """
-        Utility used by `countercraft audit --save-firmware-baseline` --
+        Utility used by `anchorroot audit --save-firmware-baseline` --
         extracts and hashes an image, writing the result as the new trusted baseline.
         Not part of `audit()` since it's a write action, not a check.
         """
@@ -254,7 +254,7 @@ class FirmwareIntegrityChecker(BaseAuditor):
         extractor, _ = checker._pick_extractor()
         if extractor is None:
             raise RuntimeError("No extraction tool (UEFIExtract/binwalk) available on PATH")
-        with tempfile.TemporaryDirectory(prefix="countercraft_fw_baseline_") as tmp:
+        with tempfile.TemporaryDirectory(prefix="anchorroot_fw_baseline_") as tmp:
             out_dir = Path(tmp) / "extracted"
             if not extractor(firmware_image, out_dir):
                 raise RuntimeError(f"Extraction failed for {firmware_image}")

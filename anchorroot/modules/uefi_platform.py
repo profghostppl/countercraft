@@ -16,9 +16,9 @@ from __future__ import annotations
 
 import re
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import is_elevated, is_linux, is_mock_mode, is_windows, run_command, run_powershell, which
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import is_elevated, is_linux, is_mock_mode, is_windows, run_command, run_powershell, which
 
 
 class UefiPlatformAuditor(BaseAuditor):
@@ -180,7 +180,7 @@ class UefiPlatformAuditor(BaseAuditor):
     @staticmethod
     def _read_efivar(var_name: str) -> bytes | None:
         if is_mock_mode():
-            from countercraft.mocks import mock_efivar
+            from anchorroot.mocks import mock_efivar
 
             raw = mock_efivar(var_name)
             return raw[4:] if raw else None

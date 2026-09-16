@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from countercraft.modules.me_auditor import MeAuditor
+from anchorroot.modules.me_auditor import MeAuditor
 
 
 def test_parse_intelmetool_detects_hap_bit_set():

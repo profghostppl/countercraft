@@ -1,9 +1,9 @@
 """
-Centralized logging for CounterCraft.
+Centralized logging for Anchorroot.
 
 Every line goes through here rather than ad hoc `print(..., file=sys.stderr)`
 calls, so status/progress/error output is consistently tagged
-`[countercraft]` (grep-able, and distinguishable from a module's own
+`[anchorroot]` (grep-able, and distinguishable from a module's own
 findings when output is piped or redirected) and its verbosity is
 controlled in one place.
 """
@@ -13,12 +13,12 @@ from __future__ import annotations
 import logging
 import sys
 
-from countercraft.config import LOG_PREFIX
+from anchorroot.config import LOG_PREFIX
 
 _LOG_FORMAT = f"{LOG_PREFIX} %(levelname)s: %(message)s"
 
 
-def get_logger(name: str = "countercraft") -> logging.Logger:
+def get_logger(name: str = "anchorroot") -> logging.Logger:
     """
     Return the named logger, configuring it on first use. Safe to call
     repeatedly (e.g. once per module) -- only attaches a handler once.
@@ -34,7 +34,7 @@ def get_logger(name: str = "countercraft") -> logging.Logger:
 
 
 def set_verbosity(quiet: bool = False, verbose: bool = False) -> None:
-    """Adjust the root CounterCraft logger's level. Called once from the CLI."""
+    """Adjust the root Anchorroot logger's level. Called once from the CLI."""
     logger = get_logger()
     if quiet:
         logger.setLevel(logging.WARNING)
@@ -44,7 +44,7 @@ def set_verbosity(quiet: bool = False, verbose: bool = False) -> None:
         logger.setLevel(logging.INFO)
 
 
-#: Module-level default logger -- `from countercraft.utils.logger import logger`
+#: Module-level default logger -- `from anchorroot.utils.logger import logger`
 #: is the common case; use `get_logger(__name__)` instead if a piece of code
 #: wants its own named logger for finer-grained filtering.
 logger = get_logger()

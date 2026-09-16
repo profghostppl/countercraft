@@ -10,7 +10,7 @@ This is distinct from (and complements) the per-check baselines already
 built into `TpmAuditor` and `FirmwareIntegrityChecker`: those are each
 scoped to one specific artifact. This engine gives one combined "has
 anything about this host's trust chain moved since I last looked"
-snapshot, driven by the `countercraft baseline save` / `countercraft audit
+snapshot, driven by the `anchorroot baseline save` / `anchorroot audit
 --diff` CLI subcommands.
 
 Every collector here degrades to an empty result (never raises) when its
@@ -31,9 +31,9 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from countercraft.config import DEFAULT_BASELINE_PATH
-from countercraft.core.models import Finding, Severity
-from countercraft.core.utils import is_linux, is_mock_mode, is_windows, run_command
+from anchorroot.config import DEFAULT_BASELINE_PATH
+from anchorroot.core.models import Finding, Severity
+from anchorroot.core.utils import is_linux, is_mock_mode, is_windows, run_command
 
 SNAPSHOT_SCHEMA_VERSION = 1
 
@@ -64,7 +64,7 @@ class Snapshot:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Snapshot":
-        # Tolerant loader: a baseline from an older/newer CounterCraft
+        # Tolerant loader: a baseline from an older/newer Anchorroot
         # version should still load, just with whatever categories it
         # happens to carry.
         return cls(
@@ -91,7 +91,7 @@ def collect_snapshot() -> Snapshot:
 
 
 def _collect_tpm_pcrs() -> dict[str, str]:
-    from countercraft.modules.tpm_auditor import TpmAuditor
+    from anchorroot.modules.tpm_auditor import TpmAuditor
 
     try:
         pcrs = TpmAuditor.read_current_pcrs()
@@ -101,7 +101,7 @@ def _collect_tpm_pcrs() -> dict[str, str]:
 
 
 def _collect_root_cas() -> dict[str, str]:
-    from countercraft.modules.ca_auditor import CaAuditor
+    from anchorroot.modules.ca_auditor import CaAuditor
 
     certs = CaAuditor().enumerate_root_cas()
     if not certs:
@@ -112,14 +112,14 @@ def _collect_root_cas() -> dict[str, str]:
 
 
 def _collect_kernel_modules() -> list[str]:
-    from countercraft.modules.persistence import PersistenceAuditor
+    from anchorroot.modules.persistence import PersistenceAuditor
 
     return PersistenceAuditor.list_loaded_kernel_module_names()
 
 
 def _collect_efi_boot_variables() -> dict[str, str]:
     if is_mock_mode():
-        from countercraft.mocks import MOCK_EFI_BOOT_VARIABLES
+        from anchorroot.mocks import MOCK_EFI_BOOT_VARIABLES
 
         return dict(MOCK_EFI_BOOT_VARIABLES)
     if is_linux():
@@ -201,7 +201,7 @@ def save_snapshot(path: Path) -> Snapshot:
 
 def load_snapshot(path: Path) -> Snapshot:
     if not path.is_file():
-        raise SnapshotError(f"Baseline not found: {path}. Create one with 'countercraft baseline save {path}' first.")
+        raise SnapshotError(f"Baseline not found: {path}. Create one with 'anchorroot baseline save {path}' first.")
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:

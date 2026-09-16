@@ -26,9 +26,9 @@ from __future__ import annotations
 
 import socket
 
-from countercraft.core.base import BaseAuditor
-from countercraft.core.models import Severity
-from countercraft.core.utils import is_linux, is_mock_mode, is_windows, run_command, run_powershell, which
+from anchorroot.core.base import BaseAuditor
+from anchorroot.core.models import Severity
+from anchorroot.core.utils import is_linux, is_mock_mode, is_windows, run_command, run_powershell, which
 
 _AMT_PORTS = {16992: "AMT (unencrypted HTTP)", 16993: "AMT (TLS/HTTPS)"}
 

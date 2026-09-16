@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from countercraft.core.models import AuditReport, Severity
+from anchorroot.core.models import AuditReport, Severity
 
 try:
     from rich.console import Console
@@ -58,7 +58,7 @@ def _print_summary_rich(report: AuditReport) -> None:
         f"[yellow]WARNING: {counts['WARNING']}[/yellow]  "
         f"[cyan]INFO: {counts['INFO']}[/cyan]"
     )
-    console.print(Panel(header, title="CounterCraft - Audit Summary", expand=False))
+    console.print(Panel(header, title="Anchorroot - Audit Summary", expand=False))
 
     for result in report.results:
         if result.skipped:
@@ -94,7 +94,7 @@ def _print_summary_rich(report: AuditReport) -> None:
 def _print_summary_plain(report: AuditReport) -> None:
     counts = report.counts()
     print("=" * 78)
-    print("CounterCraft - Audit Summary")
+    print("Anchorroot - Audit Summary")
     print(f"Host: {report.hostname}    OS: {report.os_info}")
     print(f"Generated: {report.generated_at}")
     print(

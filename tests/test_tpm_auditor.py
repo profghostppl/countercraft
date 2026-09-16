@@ -1,6 +1,6 @@
 import json
 
-from countercraft.modules.tpm_auditor import PCRS_OF_INTEREST, TpmAuditor
+from anchorroot.modules.tpm_auditor import PCRS_OF_INTEREST, TpmAuditor
 
 SAMPLE_PCRREAD_OUTPUT = """
 sha256:

@@ -17,7 +17,7 @@ pytest>=8.0
 #                    PLUS its kernel driver; see https://github.com/chipsec/chipsec)
 # UEFITool       -- provides `UEFIExtract`, preferred for firmware_integrity
 # binwalk        -- fallback extractor for firmware_integrity
-# flashrom       -- to DUMP a firmware image in the first place (not invoked by CounterCraft)
+# flashrom       -- to DUMP a firmware image in the first place (not invoked by Anchorroot)
 # osquery        -- provides `osqueryi`, preferred backend for persistence
 # tpm2-tools     -- provides `tpm2_pcrread`, required for the tpm module
 # mokutil        -- Linux Secure Boot state fallback (uefi_platform)
