@@ -1,5 +1,22 @@
 # Anchorroot
 
+[![License: MIT](https://img.shields.io/github/license/profghostppl/anchorroot)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+
+[![security](https://img.shields.io/badge/topic-security-informational)](https://github.com/topics/security)
+[![defensive-security](https://img.shields.io/badge/topic-defensive--security-informational)](https://github.com/topics/defensive-security)
+[![security-audit](https://img.shields.io/badge/topic-security--audit-informational)](https://github.com/topics/security-audit)
+[![security-tools](https://img.shields.io/badge/topic-security--tools-informational)](https://github.com/topics/security-tools)
+[![blue-team](https://img.shields.io/badge/topic-blue--team-informational)](https://github.com/topics/blue-team)
+[![cli](https://img.shields.io/badge/topic-cli-informational)](https://github.com/topics/cli)
+[![uefi](https://img.shields.io/badge/topic-uefi-informational)](https://github.com/topics/uefi)
+[![secure-boot](https://img.shields.io/badge/topic-secure--boot-informational)](https://github.com/topics/secure-boot)
+[![tpm](https://img.shields.io/badge/topic-tpm-informational)](https://github.com/topics/tpm)
+[![firmware-security](https://img.shields.io/badge/topic-firmware--security-informational)](https://github.com/topics/firmware-security)
+[![host-security](https://img.shields.io/badge/topic-host--security-informational)](https://github.com/topics/host-security)
+[![iommu](https://img.shields.io/badge/topic-iommu-informational)](https://github.com/topics/iommu)
+[![root-of-trust](https://img.shields.io/badge/topic-root--of--trust-informational)](https://github.com/topics/root-of-trust)
+
 A modular, open-source host auditing engine for **defensive** security use:
 detecting supply-chain compromise, unauthorized system-level telemetry,
 insecure UEFI/platform configuration, hidden persistence, and coprocessor/
