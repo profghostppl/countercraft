@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "countercraft"
+dynamic = ["version"]
+description = "Host-level defensive security audit engine: firmware/UEFI integrity, TPM, IOMMU, ME/PSP, root CA trust, persistence, and passive network telemetry checks."
+readme = "README.md"
+requires-python = ">=3.10"
+
+# Every module degrades gracefully without its soft dependencies (see
+# README's "External tools CounterCraft integrates with" and each
+# module's own "not available" INFO findings), so nothing here is a hard
+# runtime requirement -- install the `full` extra for complete coverage.
+dependencies = []
+
+[project.optional-dependencies]
+full = [
+    "rich>=13.7",   # CLI summary table rendering
+    "PyYAML>=6.0",  # network whitelist config parsing
+    "psutil>=5.9",  # fallback connection polling (network module)
+    "scapy>=2.5",   # full packet/DNS capture backend (network module); Npcap required on Windows
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+countercraft = "countercraft.cli:main"
+cc = "countercraft.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "countercraft.config.VERSION" }
+
+[tool.setuptools.packages.find]
+include = ["countercraft*"]
+
+[tool.setuptools.package-data]
+countercraft = ["resources/*.yaml"]

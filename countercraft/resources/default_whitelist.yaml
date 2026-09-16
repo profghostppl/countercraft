@@ -1,0 +1,23 @@
+# CounterCraft - network whitelist
+#
+# Subnets listed here are treated as "approved" destinations and will not
+# be flagged by the network module. RFC1918 private ranges,
+# loopback, and link-local are always implicitly ignored (they're not
+# "outbound" traffic) and do not need to be listed.
+#
+# Add your ISP's DNS resolvers, your VPN endpoint, corporate egress
+# gateways, or known-good SaaS ranges you've deliberately approved.
+#
+# CIDR notation, one per line.
+allowed_subnets:
+  # Public DNS resolvers (example -- remove if you don't use these)
+  - 1.1.1.1/32
+  - 8.8.8.8/32
+  - 8.8.4.4/32
+
+# Domains that, if seen as the resolved name for a destination IP (via
+# reverse DNS), are considered approved regardless of subnet membership.
+# Supports simple suffix matching, e.g. "example.com" matches
+# "api.example.com".
+allowed_domain_suffixes:
+  []

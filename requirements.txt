@@ -1,0 +1,25 @@
+# This file is kept for `pip install -r requirements.txt` convenience;
+# pyproject.toml's [project.optional-dependencies] is the canonical
+# source (see `pip install -e ".[full,dev]"`).
+#
+# Core (soft dependencies -- every module degrades gracefully if one is
+# missing, but install all of these for full functionality).
+rich>=13.7          # CLI summary table rendering
+PyYAML>=6.0          # network whitelist config parsing
+psutil>=5.9          # fallback connection polling (network module)
+scapy>=2.5           # full packet/DNS capture backend (network module); requires Npcap on Windows
+
+# Dev / test
+pytest>=8.0
+
+# --- External tools (NOT pip-installable, install via OS package manager) ---
+# CHIPSEC        -- uefi_platform register-level checks (pip install chipsec,
+#                    PLUS its kernel driver; see https://github.com/chipsec/chipsec)
+# UEFITool       -- provides `UEFIExtract`, preferred for firmware_integrity
+# binwalk        -- fallback extractor for firmware_integrity
+# flashrom       -- to DUMP a firmware image in the first place (not invoked by CounterCraft)
+# osquery        -- provides `osqueryi`, preferred backend for persistence
+# tpm2-tools     -- provides `tpm2_pcrread`, required for the tpm module
+# mokutil        -- Linux Secure Boot state fallback (uefi_platform)
+# intelmetool    -- Linux Intel ME HAP-bit/mode detail (me module)
+# openssl        -- CLI, used for CA store enumeration on Linux (ca module)
