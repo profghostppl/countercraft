@@ -8,6 +8,10 @@ dynamic = ["version"]
 description = "Host-level defensive security audit engine: firmware/UEFI integrity, TPM, IOMMU, ME/PSP, root CA trust, persistence, and passive network telemetry checks."
 readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
 
 # Every module degrades gracefully without its soft dependencies (see
 # README's "External tools CounterCraft integrates with" and each
